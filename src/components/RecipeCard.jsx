@@ -1,4 +1,5 @@
 import { RiBowlLine, RiHeart2Line, RiHeartPulseLine } from "@remixicon/react";
+import { useState } from "react";
 
 const getTwoValuesForHealthLabels = (arr) => {
   return [arr[0], arr[1]];
@@ -7,7 +8,28 @@ const getTwoValuesForHealthLabels = (arr) => {
 const RecipeCard = ({ recipe, bg, badge }) => {
   const healthLabels = getTwoValuesForHealthLabels(recipe.healthLabels);
 
-  const isFavorite = false;
+  const [isFavorite, setIsFavorite] = useState(
+    localStorage.getItem("favorites")?.includes(recipe.label)
+  );
+
+  const addRecipeToFavorites = () => {
+    let favourites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    const isRecipeAlreadyInFavorites = favourites.some(
+      (fav) => fav.label === recipe.label
+    );
+
+    if (isRecipeAlreadyInFavorites) {
+      favourites = favourites.filter((fav) => fav.label !== recipe.label);
+      setIsFavorite(false);
+    } else {
+      favourites.push(recipe);
+      setIsFavorite(true);
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favourites));
+  };
+
   return (
     <div
       className={`flex flex-col rounded-md  overflow-hidden ${bg} p-3 relative`}

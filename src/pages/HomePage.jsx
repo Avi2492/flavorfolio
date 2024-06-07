@@ -30,7 +30,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchRecpies("paneer");
+    fetchRecpies("champ");
   }, []);
 
   return (
