@@ -33,10 +33,14 @@ const HomePage = () => {
     fetchRecpies("champ");
   }, []);
 
+  const handleSearchRecipe = (e) => {
+    e.preventDefault();
+    fetchRecpies(e.target[0].value);
+  };
   return (
     <div className="p-10 flex-1">
       <div className="max-w-screen-lg mx-auto">
-        <form action="">
+        <form onSubmit={handleSearchRecipe}>
           <label className="input input-bordered flex items-center gap-2">
             <input type="text" className="grow" placeholder="Search" />
             <RiSearch2Line size={30} />
