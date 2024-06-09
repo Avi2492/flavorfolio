@@ -56,15 +56,21 @@ const DesktopSidebar = () => {
 const MobileSidebar = () => {
   return (
     <div
-      className="flex justify-center gap-10 border-t fixed w-full
+      className="flex justify-between gap-10 border-t fixed w-full
 			bottom-0 left-0 bg-base-100 z-10 p-2 sm:hidden 
 		"
     >
       <Link to={"/"}>
-        <RiHome2Line size={"24"} className="cursor-pointer" />
+        <RiHome2Line size={24} className="cursor-pointer" />
       </Link>
       <Link to={"/wishlist"}>
-        <RiHeart2Line size={"24"} className="cursor-pointer" />
+        <RiHeart2Line size={24} className="cursor-pointer" />
+      </Link>
+      <Link to={"/create"} className="flex gap-1 items-center">
+        <RiHeartAdd2Line size={24} />
+      </Link>
+      <Link to={"/user-profile"} className="flex gap-1 items-center">
+        <RiUser3Line size={24} />
       </Link>
     </div>
   );
