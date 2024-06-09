@@ -5,7 +5,7 @@ const Logo = () => {
     <div className="flex justify-center items-center gap-2">
       <RiBowlLine size={40} className="hidden md:block text-orange-500" />
       <p className="font-bold text-xl">
-        Create<span className="text-orange-500">Recipes</span>
+        Flavour<span className="text-orange-500">Folio</span>
       </p>
     </div>
   );
