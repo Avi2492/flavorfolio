@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import WishlistPage from "./pages/WishlistPage";
 import CreateRecipe from "./pages/CreateRecipe";
 import Profile from "./pages/Profile";
+import SignUpPage from "./pages/auth/signup/SignUpPage";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Sidebar />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/create" element={<CreateRecipe />} />
           <Route path="/user-profile" element={<Profile />} />

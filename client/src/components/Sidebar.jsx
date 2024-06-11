@@ -42,7 +42,7 @@ const DesktopSidebar = () => {
             </Link>
           </ul>
           <div className=" mt-32">
-            <Link to={"/user-profile"} className="flex gap-1 items-center">
+            <Link to={"/signup"} className="flex gap-1 items-center">
               <RiUser3Line size={30} />
               <span className="font-bold hidden md:block">My Profile</span>
             </Link>
@@ -69,7 +69,7 @@ const MobileSidebar = () => {
       <Link to={"/create"} className="flex gap-1 items-center">
         <RiHeartAdd2Line size={24} />
       </Link>
-      <Link to={"/user-profile"} className="flex gap-1 items-center">
+      <Link to={"/signup"} className="flex gap-1 items-center">
         <RiUser3Line size={24} />
       </Link>
     </div>
