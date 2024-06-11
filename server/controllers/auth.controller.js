@@ -1,20 +1,31 @@
+import prisma from "../db/prisma.js";
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export const signup = async (req, res) => {
   try {
-    const { id, name, username, email } = req.body;
+    const { fullName, username, email, password } = req.body;
+
     const newUser = await prisma.user.create({
       data: {
-        id,
-        name,
+        fullName,
         username,
         email,
+        password,
       },
     });
-    res.status(200).json({ message: `Signup Success "${newUser}"` });
+
+    if (newUser) {
+      generateTokenAndSetCookie(newUser.id, res);
+
+      res.status(201).json({
+        id: newUser.id,
+        fullName: newUser.fullName,
+        username: newUser.username,
+        email: newUser.email,
+      });
+    } else {
+      res.status(200).json({ message: `Invalid Data` });
+    }
   } catch (error) {
     console.log(error.message);
     res
