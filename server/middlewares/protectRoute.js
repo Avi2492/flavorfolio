@@ -1,5 +1,5 @@
-import prisma from "../db/prisma.js";
-
+// import prisma from "../db/prisma.js";
+import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
@@ -7,6 +7,7 @@ export const protectRoute = async (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (!token) {
+      // console.log(token);
       return res.status(401).json({ error: "Unauthorized: No token provided" });
     }
 
@@ -16,25 +17,14 @@ export const protectRoute = async (req, res, next) => {
       return res.status(401).json({ error: "Invalid Token" });
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: decoded.userId,
-      },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        username: true,
-        password: false,
-      },
-    });
+    const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: "User not found!" });
     }
 
     req.user = user;
-    console.log(user);
+    // console.log(user);
     next();
   } catch (error) {
     return res
