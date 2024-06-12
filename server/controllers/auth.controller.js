@@ -80,3 +80,35 @@ export const signin = async (req, res) => {
       .json({ error: "Internal Server Error in Login Controller" });
   }
 };
+
+export const logout = async (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logout Successfull!" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error in Logout Controller" });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error in GetMe Controller" });
+  }
+};
