@@ -54,7 +54,7 @@ const SignUpPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     mutate(formData);
-    navigate("/");
+    navigate("/login");
   };
 
   const handleInputChange = (e) => {
