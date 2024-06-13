@@ -6,7 +6,7 @@ import {
   RiUser3Line,
 } from "@remixicon/react";
 import { Link } from "react-router-dom";
-import Logo from "./Logo";
+import Logo from "./common/Logo";
 
 const Sidebar = () => {
   return (

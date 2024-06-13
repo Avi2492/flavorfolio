@@ -1,7 +1,6 @@
-// import prisma from "../db/prisma.js";
-
+import prisma from "../db/prisma.js";
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
-import User from "../models/user.model.js";
+// import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
@@ -14,46 +13,48 @@ export const signup = async (req, res) => {
       return res.status(400).json({ error: "Invalid Email Format" });
     }
 
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ error: "Username is already taken!" });
-    }
+    // const existingUser = await User.findOne({ username });
+    // if (existingUser) {
+    //   return res.status(400).json({ error: "Username is already taken!" });
+    // }
 
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res
-        .status(400)
-        .json({ error: "User Email is already taken! Login maybe" });
-    }
+    // const existingEmail = await User.findOne({ email });
+    // if (existingEmail) {
+    //   return res
+    //     .status(400)
+    //     .json({ error: "User Email is already taken! Login maybe" });
+    // }
 
-    if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ error: "Password must be atleast 6 characters long" });
-    }
+    // if (password.length < 6) {
+    //   return res
+    //     .status(400)
+    //     .json({ error: "Password must be atleast 6 characters long" });
+    // }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
-      fullName,
-      username,
-      email,
-      password: hashedPassword,
+    const newUser = await prisma.user.create({
+      data: {
+        fullName,
+        username,
+        email,
+        password: hashedPassword,
+      },
     });
 
     if (newUser) {
-      generateTokenAndSetCookie(newUser._id, res);
+      generateTokenAndSetCookie(newUser.id, res);
 
-      await newUser.save();
+      // await newUser.save();
 
       res.status(201).json({
-        _id: newUser._id,
+        id: newUser.id,
         fullName: newUser.fullName,
         username: newUser.username,
         email: newUser.email,
-        profileImg: newUser.profileImg,
-        coverImg: newUser.coverImg,
+        // profileImg: newUser.profileImg,
+        // coverImg: newUser.coverImg,
       });
     } else {
       res.status(400).json({ message: `Invalid User Data` });
@@ -70,28 +71,27 @@ export const signin = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await User.findOne({
-      username,
+    const user = await prisma.user.findUnique({
+      where: {
+        username,
+      },
     });
 
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user?.password || ""
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!user || !isPasswordCorrect) {
       res.status(400).json({ error: "Invalid email or password" });
     }
 
-    generateTokenAndSetCookie(user._id, res);
+    generateTokenAndSetCookie(user.id, res);
 
     res.status(200).json({
-      _id: user._id,
+      id: user.id,
       fullName: user.fullName,
       username: user.username,
       password: user.password,
-      profileImg: user.profileImg,
-      coverImg: user.coverImg,
+      // profileImg: user.profileImg,
+      // coverImg: user.coverImg,
     });
   } catch (error) {
     console.log(error);
@@ -114,13 +114,22 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({
+      id: user.id,
+      fullName: user.fullName,
+      username: user.username,
+      email: user.email,
+    });
   } catch (error) {
     res
       .status(500)

@@ -1,5 +1,5 @@
-// import prisma from "../db/prisma.js";
-import User from "../models/user.model.js";
+import prisma from "../db/prisma.js";
+// import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
@@ -17,7 +17,18 @@ export const protectRoute = async (req, res, next) => {
       return res.status(401).json({ error: "Invalid Token" });
     }
 
-    const user = await User.findById(decoded.userId).select("-password");
+    // const user = await User.findById(decoded.userId).select("-password");
+    const user = await prisma.user.findUnique({
+      where: {
+        id: decoded.userId,
+      },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        password: false,
+      },
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found!" });
