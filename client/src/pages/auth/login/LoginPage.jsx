@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import Logo from "../../../components/common/Logo";
 import { RiLockPasswordLine, RiMapPinUserLine } from "@remixicon/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,8 @@ const LoginPage = () => {
   });
 
   const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
 
   const {
     mutate: loginMutation,
@@ -47,6 +49,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     loginMutation(formData);
+    navigate("/");
   };
 
   const handleInputChange = (e) => {
@@ -89,7 +92,7 @@ const LoginPage = () => {
         </form>
         <div className="flex flex-col gap-2 mt-4">
           <p className="text-white text-lg">{"Don't"} have an account?</p>
-          <Link to="/">
+          <Link to="/signup">
             <p className="text-orange-500 flex justify-center hover:text-white">
               Sign up
             </p>

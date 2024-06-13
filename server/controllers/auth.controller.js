@@ -1,7 +1,7 @@
 import prisma from "../db/prisma.js";
 import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
 // import User from "../models/user.model.js";
-import bcrypt from "bcryptjs";
+import bcryptjs from "bcryptjs";
 
 export const signup = async (req, res) => {
   try {
@@ -31,8 +31,8 @@ export const signup = async (req, res) => {
     //     .json({ error: "Password must be atleast 6 characters long" });
     // }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(password, salt);
 
     const newUser = await prisma.user.create({
       data: {
@@ -77,7 +77,7 @@ export const signin = async (req, res) => {
       },
     });
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
     if (!user || !isPasswordCorrect) {
       res.status(400).json({ error: "Invalid email or password" });
@@ -89,7 +89,7 @@ export const signin = async (req, res) => {
       id: user.id,
       fullName: user.fullName,
       username: user.username,
-      password: user.password,
+      // password: user.password,
       // profileImg: user.profileImg,
       // coverImg: user.coverImg,
     });

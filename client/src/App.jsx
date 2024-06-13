@@ -11,46 +11,54 @@ import LoadingSpinner from "./components/common/LoadingSpinner";
 import LoginPage from "./pages/auth/login/LoginPage";
 
 const App = () => {
-  // const { data: authUser, isLoading } = useQuery({
-  //   queryKey: ["authUser"],
-  //   queryFn: async () => {
-  //     try {
-  //       const res = await fetch("/api/v1/auth/me");
+  const { data: authUser, isLoading } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/v1/auth/me");
 
-  //       const data = await res.json();
+        const data = await res.json();
 
-  //       if (data.error) return null;
+        if (data.error) return null;
 
-  //       if (!res.ok || data.error) {
-  //         throw new Error("Oops! something went wrong");
-  //       }
+        if (!res.ok || data.error) {
+          throw new Error("Oops! something went wrong");
+        }
 
-  //       return data;
-  //     } catch (error) {
-  //       throw new Error(error.message);
-  //     }
-  //   },
-  // });
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="h-screen flex justify-center items-center">
-  //       <LoadingSpinner size="lg" />
-  //     </div>
-  //   );
-  // }
+    retry: false,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
   return (
     <>
       <div className="flex max-w-6xl mx-auto">
-        {/* {authUser && <Sidebar />} */}
+        {authUser && <Sidebar />}
         <Routes>
-          {/* <Route
+          <Route
             path="/"
-            element={authUser ? <HomePage /> : <Navigate to={"/"} />}
-          /> */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<SignUpPage />} />
-          {/* <Route
+            element={authUser ? <HomePage /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/login"
+            element={!authUser ? <LoginPage /> : <Navigate to={"/"} />}
+          />
+          <Route
+            path="/signup"
+            element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />}
+          />
+          <Route
             path="/wishlist"
             element={authUser ? <WishlistPage /> : <Navigate to={"/login"} />}
           />
@@ -61,7 +69,7 @@ const App = () => {
           <Route
             path="/user-profile/:username"
             element={authUser ? <Profile /> : <Navigate to={"/login"} />}
-          /> */}
+          />
         </Routes>
         <Toaster />
       </div>
