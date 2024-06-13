@@ -1,4 +1,3 @@
-import React from "react";
 import {
   RiHeart2Line,
   RiHeartAdd2Line,
@@ -6,7 +5,9 @@ import {
   RiUser3Line,
 } from "@remixicon/react";
 import { Link } from "react-router-dom";
-import Logo from "./common/Logo";
+import Logo from "./Logo";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   return (
@@ -20,6 +21,40 @@ const Sidebar = () => {
 export default Sidebar;
 
 const DesktopSidebar = () => {
+  const queryClient = useQueryClient();
+  const { mutate: logout } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch("/api/v1/auth/logout", {
+          method: "POST",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went in Desktop Sidebar");
+        }
+      } catch (error) {
+        toast.error(error.message);
+        throw new Error(error);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Logout Success!");
+
+      queryClient.invalidateQueries({
+        queryKey: ["authUser"],
+      });
+    },
+    onError: () => {
+      toast.error("Logout Failed");
+    },
+  });
+
+  const { data: authUser } = useQuery({
+    queryKey: ["authUser"],
+  });
+
   return (
     <>
       <div className="p-3 md:p-10 border-r min-h-screen w-24 md:w-64 hidden sm:block">
@@ -42,10 +77,28 @@ const DesktopSidebar = () => {
             </Link>
           </ul>
           <div className=" mt-32">
-            <Link to={"/signup"} className="flex gap-1 items-center">
+            <Link
+              to={`/profile/${authUser?.username}`}
+              className="flex gap-1 items-center"
+            >
               <RiUser3Line size={30} />
               <span className="font-bold hidden md:block">My Profile</span>
             </Link>
+            {authUser && (
+              <Link to={`/profile/${authUser.username}`}>
+                <div className="avatar hidden md:inline-flex">
+                  <div className="w-8 rounded-full">
+                    <img
+                      src={
+                        authUser?.profileImg ||
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/User-Pict-Profil.svg/1200px-User-Pict-Profil.svg.png"
+                      }
+                      alt="avatar-sidebar"
+                    />
+                  </div>
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/common/Sidebar";
 import HomePage from "./pages/HomePage";
 import { Navigate, Route, Routes } from "react-router-dom";
 import WishlistPage from "./pages/WishlistPage";
