@@ -1,21 +1,12 @@
-import prisma from "../db/prisma.js";
+// import prisma from "../db/prisma.js";
+
+import User from "../models/user.model.js";
 
 export const getUserProfile = async (req, res) => {
   const { username } = req.params;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        username,
-      },
-      select: {
-        id: true,
-        fullName: true,
-        password: false,
-        email: true,
-        createdAt: true,
-      },
-    });
+    const user = await User.findOne({ username }).select("-password");
 
     if (!user) {
       res.status(404).json({ error: "User not found!" });

@@ -2,6 +2,7 @@ import {
   RiHeart2Line,
   RiHeartAdd2Line,
   RiHome2Line,
+  RiLogoutBoxLine,
   RiUser3Line,
 } from "@remixicon/react";
 import { Link } from "react-router-dom";
@@ -10,17 +11,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const Sidebar = () => {
-  return (
-    <>
-      <DesktopSidebar />
-      <MobileSidebar />
-    </>
-  );
-};
-
-export default Sidebar;
-
-const DesktopSidebar = () => {
   const queryClient = useQueryClient();
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
@@ -32,10 +22,10 @@ const DesktopSidebar = () => {
         const data = await res.json();
 
         if (!res.ok) {
-          throw new Error(data.error || "Something went in Desktop Sidebar");
+          throw new Error(data.error || "Something went in Sidebar");
         }
       } catch (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
         throw new Error(error);
       }
     },
@@ -76,27 +66,38 @@ const DesktopSidebar = () => {
               <span className="font-bold hidden md:block">Create New</span>
             </Link>
           </ul>
-          <div className=" mt-32">
-            <Link
-              to={`/profile/${authUser?.username}`}
-              className="flex gap-1 items-center"
-            >
-              <RiUser3Line size={30} />
-              <span className="font-bold hidden md:block">My Profile</span>
-            </Link>
-            {authUser && (
+          <div className="mt-20">
+            {authUser ? (
               <Link to={`/profile/${authUser.username}`}>
                 <div className="avatar hidden md:inline-flex">
                   <div className="w-8 rounded-full">
                     <img
-                      src={
-                        authUser?.profileImg ||
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/User-Pict-Profil.svg/1200px-User-Pict-Profil.svg.png"
-                      }
-                      alt="avatar-sidebar"
+                      src={authUser?.profileImg || "/avatar-placeholder.png"}
                     />
                   </div>
                 </div>
+                <div className="flex flex-1 justify-between items-center">
+                  <div className="hidden md:block">
+                    <p className="text-white font-bold text-sm w-20 truncate">
+                      {authUser?.fullName}
+                    </p>
+                    <p className="text-orange-500 text-sm">
+                      {authUser?.username}
+                    </p>
+                  </div>
+                  <RiLogoutBoxLine
+                    className="w-5 h-5 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      logout();
+                    }}
+                  />
+                </div>
+              </Link>
+            ) : (
+              <Link to={`/signin}`} className="flex gap-1 items-center">
+                <RiUser3Line size={30} />
+                <span className="font-bold hidden md:block">My Profile</span>
               </Link>
             )}
           </div>
@@ -106,25 +107,27 @@ const DesktopSidebar = () => {
   );
 };
 
-const MobileSidebar = () => {
-  return (
-    <div
-      className="flex justify-between gap-10 border-t fixed w-full
-			bottom-0 left-0 bg-base-100 z-10 p-2 sm:hidden 
-		"
-    >
-      <Link to={"/"}>
-        <RiHome2Line size={24} className="cursor-pointer" />
-      </Link>
-      <Link to={"/wishlist"}>
-        <RiHeart2Line size={24} className="cursor-pointer" />
-      </Link>
-      <Link to={"/create"} className="flex gap-1 items-center">
-        <RiHeartAdd2Line size={24} />
-      </Link>
-      <Link to={"/signup"} className="flex gap-1 items-center">
-        <RiUser3Line size={24} />
-      </Link>
-    </div>
-  );
-};
+export default Sidebar;
+
+// const MobileSidebar = () => {
+//   return (
+//     <div
+//       className="flex justify-between gap-10 border-t fixed w-full
+// 			bottom-0 left-0 bg-base-100 z-10 p-2 sm:hidden
+// 		"
+//     >
+//       <Link to={"/"}>
+//         <RiHome2Line size={24} className="cursor-pointer" />
+//       </Link>
+//       <Link to={"/wishlist"}>
+//         <RiHeart2Line size={24} className="cursor-pointer" />
+//       </Link>
+//       <Link to={"/create"} className="flex gap-1 items-center">
+//         <RiHeartAdd2Line size={24} />
+//       </Link>
+//       <Link to={"/signup"} className="flex gap-1 items-center">
+//         <RiUser3Line size={24} />
+//       </Link>
+//     </div>
+//   );
+// };
